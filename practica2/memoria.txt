@@ -1,0 +1,264 @@
+				   Práctica 2 
+	Programación Declarativa: Lógica y Restricciones
+
+
+
+
+				        Integrantes del grupo
+				
+			 - Iñigo Aranguren Redondo
+			 - Ignacio de las Alas-Pumariño 
+
+
+
+
+
+
+
+-------------------------------------
+CÓDIGO DE LA PRACTICA
+-------------------------------------
+
+%Practica 2
+
+%Integrantes del grupo
+alumno_prode('Redondo', 'Aranguren', 'Inigo').
+alumno_prode('Martinez', 'de las Alas Pumarino', 'Ignacio').
+
+%Predicado menor/4
+%Devuelve en M el resultado de la comparación entre A y B
+%utilizando Comp como criterio de comparación
+
+menor(A,B,Comp,M) :-
+    functor(C,Comp,2),
+    arg(1,C,A),
+    arg(2,C,B),
+    (call(C) -> M=A;
+    (functor(D,Comp,2),
+    arg(2,D,A),
+    arg(1,D,B),
+    call(D) -> M=B; fail)).
+
+
+%Predicado menor_o_igual/2
+%Determina si su primer argumento es menor o igual al segundo
+%Una variable libre es igual a cualquier otro termino
+
+menor_o_igual(X,Y) :-
+    var(X) -> true;
+    var(Y) -> true;
+	functor(X,F1,A1),
+	functor(Y,F2,A2),
+	F1@=<F2,
+    (A1==A2 -> check(X,Y,1,A2);
+    A1<A2 -> true; fail).
+
+
+%Predicado auxiliar check/4
+%Se recorren los argumentos de cada termino de izquierda a derecha
+%Se comparan los de la misma posicion
+%Se va aumentando la posicion con el predicado plus
+
+check(X,Y,L,A2) :-
+    (A2>=L ->
+    arg(L,X,P1),
+    arg(L,Y,P2),
+    suma(L,1,L2),
+    (menor_o_igual(P1,P2) -> check(X,Y,L2,A2); fail); true).
+
+%Predicado auxiliar suma
+suma(X,Y,Z) :- Z is X + Y.
+
+
+%Predicado lista_hojas/2
+%Dada una lista, devuelve otra con las hojas que compondran el arbol
+
+lista_hojas(Lista, Hojas) :-
+    add_hojas(Lista,_,Hojas).
+
+%Predicado auxiliar add_hojas/3
+%Va creando las hojas y las inserta en la lista
+
+add_hojas([], H1, Hojas) :-
+Hojas=H1.
+
+add_hojas([X|X1], H1, Hojas) :-
+T=..[tree,X,void,void],
+insertLast(T,H1,H2),
+add_hojas(X1,H2,HT),
+Hojas=HT.
+
+
+%Predicado hojas_arbol/3
+%Dada una lista de hojas devuelve el arbol flotante inicial correspondiente
+%Crea el arbol en funcion del criterio de comparacion Comp
+%Mediante el metodo auxiliar check_arbol
+%El cual llama a menor/4 para realizarlo
+
+hojas_arbol(Hojas, Comp, Arbol) :-
+    make_Arbol(Hojas, Comp, Arbol).
+
+make_Arbol([X], _, Arbol) :-
+    Arbol=X.
+
+make_Arbol([X|X1], Comp, Arbol) :-
+    functor(T,tree,3),
+	arg(2,T,X),
+	check_arbol(X1,Comp,T,Arbol).
+
+check_arbol([] , _, T, Arbol) :-
+    Arbol=T.
+
+check_arbol([X|X1], Comp, T, Arbol) :-
+	arg(1,X,A1),
+    arg(3,T,L3),
+	(var(L3) -> arg(2,T,L),
+	arg(1,L,B1),
+	menor(A1,B1,Comp,M),
+	arg(1,T,M),
+	arg(3,T,X),
+	check_arbol(X1,Comp,T,Arbol);
+	functor(T2,tree,3),
+	arg(2,T2,T),
+	check_arbol([X|X1],Comp,T2,Arbol)).
+
+
+%Predicado ordenacion/3
+%Dado el arbol inicial, devuelve en el tercer argumento la lista ordenada
+%Dado el arbol flotante ordena segun el criterio de comparacion Comp
+
+ordenacion(Arbol, Comp, Orden) :-
+    check_orden(Arbol, Comp, [], Ordenada),
+    Orden=Ordenada.
+
+check_orden(Arbol, Comp, LOrden, Ordenada) :-
+    arg(2,Arbol,Leaf),
+	(Leaf\==void -> arg(1,Arbol,R),
+	insertLast(R,LOrden,O2),
+	reflota(Arbol,Comp,ArbolR),
+	check_orden(ArbolR,Comp,O2,O1),
+	Ordenada=O1;
+	arg(1,Arbol,R),
+	insertLast(R,LOrden,O2),
+	Ordenada=O2).
+
+%Predicado auxiliar reflota/3
+%Reflota el Arbol en funcion del criterio de comparacion
+%Llama a un predicado auxiliar check_reflota para reflotar el arbol recursivamente
+
+reflota(Arbol1, Comp, Arbol2) :-
+    check_reflota([],LHojas,Arbol1),
+    lista_hojas(LHojas,Hojas),
+    hojas_arbol(Hojas,Comp,Arbol2).
+
+check_reflota(H, LHojas, Arbol1) :-
+    arg(1,Arbol1,X),
+    arg(2,Arbol1,Y),
+	(Y\==void -> arg(3,Arbol1,A3),
+	arg(1,A3,R),
+	arg(1,Y,R2),
+        (X==R2 -> root(R,H,H1),
+        check_reflota(H1,H2,Y),
+        LHojas=H2;
+		root(R2,H,H1),
+		check_reflota(H1,H2,Y),
+		LHojas=H2);
+	LHojas=H).
+
+%Predicados auxiliares
+
+insertLast(X, [], [X]).
+insertLast(X, [Y|Z], [Y|Z1]):- insertLast(X, Z, Z1).
+
+%Predicado para hacer raiz
+root(X,Y,Z):- Z=[X|Y].
+
+
+%Predicado ordenar/3
+%Dada una lista y mediante el criterio Comp introducido se devuelve en Orden la lista ordenada
+
+ordenar(Lista, Comp, Orden):-
+	lista_hojas(Lista,Hojas),
+	hojas_arbol(Hojas,Comp,Arbol),
+	ordenacion(Arbol,Comp,Orden).
+
+
+
+
+-------------------------------------
+PRUEBAS DE LA PRACTICA :
+-------------------------------------
+
+?- menor(3,4,=<,M).
+M = 3.
+
+?- menor(3,4,>,M).
+M = 4.
+
+?- menor(5,3,>,M).
+M = 5.
+
+?- menor(5,5,>,M).
+false.
+
+
+?- menor_o_igual(p(a,X),p(Y,b)).
+true.
+
+?- menor_o_igual(p(...),p(...)).
+true.
+
+?- menor_o_igual(p(a,b,c),p(a,a,a,a)).
+true.
+
+?- menor_o_igual(p(a,a,a,a),p(a,b,c)).
+false.
+
+?- menor_o_igual(p(a,X,c,a),p(a,b,c,d)).
+true.
+
+?- menor_o_igual(5,5).
+true.
+
+?- menor_o_igual(9,5).
+false.
+
+?- menor_o_igual(a,b).
+true.
+
+?- menor_o_igual(c,a).
+false.
+
+?- lista_hojas([1,2,3],Hojas).
+Hojas = [tree(1, void, void), tree(2, void, void), tree(3, void, void)] 
+
+
+?- lista_hojas([6],Hojas).
+Hojas = [tree(6, void, void)] 
+
+?- hojas_arbol([tree(1, void, void), tree(2, void, void), tree(3, void, void)],<, Arbol).
+Arbol = tree(1, tree(1, tree(1, void, void), tree(2, void, void)), tree(3, void, void)).
+
+?- ordenar([1,4,3,2],=<,Orden).
+Orden = [1, 2, 3, 4] .
+
+?- ordenar([5,4,6,2],>,Orden).
+Orden = [6, 5, 4, 2] .
+
+?- ordenar([1,2,3,4,5,6],>=,Orden).
+Orden = [6, 5, 4, 3, 2, 1] .
+
+?- ordenar([6,3,2,1],menor_o_igual,Orden).
+Orden = [1, 2, 3, 6] .
+
+?- ordenar([3,4,2,1],=<,[1,2,3,4]).
+true .
+
+?- ordenar([3,4,2,1],>=,[4,3,2,1]).
+true .
+
+-------------------------------------
+ANOTACIONES :
+——————————————————
+
+Al principio tuvimos dudas de como implementar el predicado menor/4, ya que pensábamos que debía devolver siempre el menor independiente del criterio de comparación que se le suministrara. Al final vimos con los ejemplos aclaratorios que la función de este predicado era devolver el resultado de la comparación entre “A” y “B” en función del criterio de comparación dado.

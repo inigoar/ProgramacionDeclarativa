@@ -1,0 +1,1 @@
+Segunda práctica de la asignatura Programación declarativa lógica y restricciones
