@@ -1,0 +1,197 @@
+----------------------------------
+        Integrantes del grupo 
+----------------------------------
+
+1- Iñigo Aranguren Redondo
+2- Ignacio de las Alas-Pumariño
+
+----------------------------------
+       Codigo de la práctica 
+----------------------------------
+
+
+
+-------------------------------------
+PRUEBAS DE LA PRACTICA (EJERCICIO 1):
+-------------------------------------
+
+
+-------
+esTorre
+-------
+
+pieza(1,2,1,azul),pieza(2,2,1,azul)
+-------------------------------------------
+
+?- esTorre([pieza(s(0),s(s(0)),s(0),a),pieza(s(s(0)),s(s(0)),s(0),a)])
+
+yes
+
+pieza(3,2,1,azul),pieza(2,2,1,azul)
+-------------------------------------------
+
+?- esTorre([pieza(s(s(s(0))),s(s(0)),s(0),a),pieza(s(s(0)),s(s(0)),s(0),a)])
+
+no
+
+pieza(1,2,1,morado),pieza(2,2,1,azul)
+-----------------------------------------
+
+?- esTorre([pieza(s(0),s(s(0)),s(0),m),pieza(s(s(0)),s(s(0)),s(0),a)])
+
+no
+
+pieza(1,2,1,azul),pieza(2,2,1,azul),pieza(3,2,1,azul)
+-----------------------------------------------------------------
+
+?- esTorre([pieza(s(0),s(s(0)),s(0),a),pieza(s(s(0)),s(s(0)),s(0),a),pieza(s(s(s(0))),s(s(0)),s(0),a)])
+
+yes
+
+
+-----------
+alturaTorre
+-----------
+
+pieza(1,2,1,azul),pieza(2,2,1,azul)
+-------------------------------------------
+
+?- alturaTorre([pieza(s(0),s(s(0)),s(0),a),pieza(s(s(0)),s(s(0)),s(0),a)],s(s(s(s(0)))))
+
+yes
+
+pieza(1,2,1,azul),pieza(2,2,1,azul),pieza(3,2,1,azul)
+-----------------------------------------------------------------
+
+?- alturaTorre([pieza(s(0),s(s(0)),s(0),a),pieza(s(s(0)),s(s(0)),s(0),a),pieza(s(s(s(0))),s(s(0)),s(0),a)],s(s(s(s(s(s(0)))))))
+
+yes
+
+pieza(3,2,1,azul),pieza(2,2,1,azul)
+-------------------------------------------
+
+?- alturaTorre([pieza(s(s(s(0))),s(s(0)),s(0),a),pieza(s(s(0)),s(s(0)),s(0),a)],s(s(s(s(0)))))
+
+no
+
+
+------------
+coloresTorre
+------------
+
+pieza(2,1,2,azul),pieza(2,1,2,rojo),pieza(2,1,2,amarillo)
+---------------------------------------------------------
+
+?- coloresTorre([pieza(s(s(0)),s(0),s(s(0)),a),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),am)],[a,r,am])
+
+yes
+
+pieza(2,1,2,verde),pieza(2,1,2,amarillo),pieza(1,2,1,rojo)
+----------------------------------------------------------
+
+?- coloresTorre([pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),am),pieza(s(0),s(s(0)),s(0),r)],[v,am,r])
+
+no
+
+pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(2,1,2,azul)
+------------------------------------------------------
+
+?- coloresTorre([pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),a)],[a,r,v])
+
+no
+
+
+----------------
+coloresIncluidos
+----------------
+
+pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(2,1,2,azul) / pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(2,1,2,azul),pieza(2,1,2,verde)
+----------------------------------------------------------------------------------------------------------------------------------
+
+?- coloresIncluidos([pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),a)],[pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),a),pieza(s(s(0)),s(0),s(s(0)),v)])
+
+yes
+
+pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(2,1,2,azul) / pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(2,1,2,amarillo),pieza(2,1,2,verde)
+--------------------------------------------------------------------------------------------------------------------------------------
+
+?- coloresIncluidos([pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),a)],[pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),am),pieza(s(s(0)),s(0),s(s(0)),v)])
+
+no
+
+pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(1,2,1,azul) / pieza(2,1,2,verde),pieza(2,1,2,rojo),pieza(2,1,2,azul),pieza(2,1,2,verde)
+----------------------------------------------------------------------------------------------------------------------------------
+
+?- coloresIncluidos([pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(0),s(s(0)),s(0),a)],[pieza(s(s(0)),s(0),s(s(0)),v),pieza(s(s(0)),s(0),s(s(0)),r),pieza(s(s(0)),s(0),s(s(0)),a),pieza(s(s(0)),s(0),s(s(0)),v)])
+
+no
+
+
+-------------------------------------
+PRUEBAS DE LA PRACTICA (EJERCICIO 2):
+-------------------------------------
+
+
+-------------
+esEdificioPar
+-------------
+
+piso 1 (b,b,r,r), piso 0 (r,r,r,r)
+----------------------------------
+
+?- esEdificioPar([[ b,b,r,r], [r,r,r,r]])
+
+yes
+
+piso 1 (b,b,r,r,b), piso 0 (r,r,r,r,r)
+--------------------------------------
+
+?- esEdificioPar([[b,b,r,r,b], [r,r,r,r,r]])
+
+yes
+
+piso 2 (a,a,b,b,b,b), piso 1 (r,r,v,v,b,b) piso 0 (am,am,r,r,v,v)
+-----------------------------------------------------------------
+
+?- esEdificioPar([[a,a,b,b,b,b], [r,r,v,v,b,b], [am,am,r,r,v,v]])
+
+yes
+
+piso 2 (a,a,b,b,b,b), piso 1 (r,v,v,v,b,b) piso 0 (am,am,r,r,v,v)
+-----------------------------------------------------------------
+
+?- esEdificioPar([[a,a,b,b,b,b], [r,v,v,v,b,b], [am,am,r,r,v,v]])
+
+yes
+
+piso 2 (a,f,b,b,b,b), piso 1 (r,v,v,v,b,b) piso 0 (am,am,r,r,v,v)
+-----------------------------------------------------------------
+
+?- esEdificioPar([[a,f,b,b,b,b], [r,v,v,v,b,b], [am,am,r,r,v,v]])
+
+no
+
+------------------
+esEdificioPiramide
+------------------
+
+piso 3 (b,b,b,v,b,b,b), piso 2 (b,b,a,a,a,b,b), piso 1 (b,am,am,am,am,am,b), piso 0 (r,r,r,r,r,r,r)
+---------------------------------------------------------------------------------------------------
+
+?- esEdificioPiramide([[b,b,b,v,b,b,b],[b,b,a,a,a,b,b],[b,am,am,am,am,am,b],[r,r,r,r,r,r,r]])
+
+yes
+
+piso 3 (b,b,b,v,b,b,b), piso 2 (r,r,a,a,a,b,b), piso 1 (b,am,am,am,am,am,b), piso 0 (r,r,r,r,r,r,r)
+---------------------------------------------------------------------------------------------------
+
+?- esEdificioPiramide([[b,b,b,v,b,b,b],[r,r,a,a,a,b,b],[b,am,am,am,am,am,b],[r,r,r,r,r,r,r]])
+
+no
+
+piso 3 (b,b,b,v,b,b,b), piso 2 (b,b,a,t,a,b,b), piso 1 (b,am,am,am,am,am,b), piso 0 (r,r,r,r,r,r,r)
+---------------------------------------------------------------------------------------------------
+
+?- esEdificioPiramide([[b,b,b,v,b,b,b],[b,b,a,t,a,b,b],[b,am,am,am,am,am,b],[r,r,r,r,r,r,r]])
+
+no
